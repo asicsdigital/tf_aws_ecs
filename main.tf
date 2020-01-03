@@ -38,7 +38,7 @@ resource "aws_launch_configuration" "ecs" {
   # If the expression in the following list itself returns a list, remove the
   # brackets to avoid interpretation as a list of lists. If the expression
   # returns a single list item then leave it as-is and remove this TODO comment.
-  security_groups             = [concat([aws_security_group.ecs.id], var.security_group_ids)]
+  security_groups             = concat([aws_security_group.ecs.id], var.security_group_ids)
   associate_public_ip_address = var.associate_public_ip_address
   spot_price                  = var.spot_bid_price
 
@@ -109,13 +109,9 @@ resource "aws_autoscaling_group" "ecs" {
   load_balancers       = var.load_balancers
   enabled_metrics      = var.enabled_metrics
 
-  tags = merge(
-    {
-      "key"                 = "Name"
-      "value"               = "${var.name} ${var.tagName}"
-      "propagate_at_launch" = true
-    },
-    var.extra_tags,
+  tags = concat(
+    [map("key","Name","value","${var.name} ${var.tagName}","propagate_at_launch",true)],
+    var.extra_tags
   )
 
   lifecycle {
@@ -140,13 +136,10 @@ resource "aws_autoscaling_group" "ecs_second" {
   load_balancers       = var.load_balancers
   enabled_metrics      = var.enabled_metrics
 
-  tags = merge(
-    {
-      "key"                 = "Name"
-      "value"               = "${var.name} ${var.tagName} Second"
-      "propagate_at_launch" = true
-    },
-    var.extra_tags,
+
+  tags = concat(
+    [map("key","Name","value","${var.name} ${var.tagName} Second","propagate_at_launch",true)],
+    var.extra_tags
   )
 
   lifecycle {
