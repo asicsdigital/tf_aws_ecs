@@ -60,8 +60,8 @@ variable "ebs_block_device" {
 }
 
 variable "extra_tags" {
-  type    = map
-  default = {}
+  type    = list(map(string))
+  default = [{}]
 }
 
 variable "heartbeat_timeout" {
